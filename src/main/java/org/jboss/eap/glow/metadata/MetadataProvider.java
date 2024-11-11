@@ -13,5 +13,5 @@ import java.io.InputStream;
  */
 public interface MetadataProvider {
     public String getVersion();
-    InputStream getProvisioningFile(String profile, ClassLoader loader);
+    InputStream getProvisioningFile(String space, String profile, ClassLoader loader);
 }
