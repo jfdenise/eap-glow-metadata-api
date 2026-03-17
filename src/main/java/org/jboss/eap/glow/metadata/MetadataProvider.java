@@ -5,6 +5,7 @@
 package org.jboss.eap.glow.metadata;
 
 import java.io.InputStream;
+import java.net.URI;
 
 
 /**
@@ -14,4 +15,5 @@ import java.io.InputStream;
 public interface MetadataProvider {
     public String getVersion();
     InputStream getProvisioningFile(String space, String profile, ClassLoader loader);
+    URI getLayerConfiguration(URI uri, String layer, String space, String context, ClassLoader loader);
 }
