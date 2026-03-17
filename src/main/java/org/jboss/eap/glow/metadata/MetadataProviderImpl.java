@@ -5,6 +5,8 @@
 package org.jboss.eap.glow.metadata;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -29,7 +31,21 @@ public class MetadataProviderImpl implements MetadataProvider {
     @Override
     public InputStream getProvisioningFile(String space, String context, ClassLoader loader) {
         String path = resourcesRoot + (space == null ? ""  :"/" + space) + "/" + version + "/provisioning-" + context + ".xml";
-        System.out.println("PATH IS " + path);
         return loader.getResourceAsStream(path);
+    }
+
+    @Override
+    public URI getLayerConfiguration(URI uri, String layer, String space, String context, ClassLoader loader) {
+        String uriPath = uri.getPath().replace("/", "_");
+        String path = resourcesRoot + "/layers-configuration/" + version + (space == null ? "/default"  : "/" + space) + "/nominal/" + context + "/" + layer + "/" + uriPath;
+        URL u = loader.getResource(path);
+        if (u == null) {
+            return null;
+        }
+        try {
+            return loader.getResource(path).toURI();
+        } catch (URISyntaxException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
