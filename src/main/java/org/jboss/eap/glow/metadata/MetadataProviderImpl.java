@@ -17,10 +17,14 @@ public class MetadataProviderImpl implements MetadataProvider {
 
     private final String version;
     private final String resourcesRoot;
-
+    private final String variant;
     protected MetadataProviderImpl(String version, String resourcesRoot) {
+        this(version, resourcesRoot, null);
+    }
+    protected MetadataProviderImpl(String version, String resourcesRoot, String variant) {
         this.version = version;
         this.resourcesRoot = resourcesRoot;
+        this.variant = variant;
     }
 
     @Override
@@ -29,15 +33,20 @@ public class MetadataProviderImpl implements MetadataProvider {
     }
 
     @Override
-    public InputStream getProvisioningFile(String space, String context, ClassLoader loader) {
-        String path = resourcesRoot + (space == null ? ""  :"/" + space) + "/" + version + "/provisioning-" + context + ".xml";
+    public String getVariant() {
+        return variant;
+    }
+
+    @Override
+    public InputStream getProvisioningFile(String space, String context, ClassLoader loader, String variant) {
+        String path = resourcesRoot + (space == null ? ""  :"/" + space) + "/" + version + (variant == null ? "" : "/" + variant) + "/provisioning-" + context + ".xml";
         return loader.getResourceAsStream(path);
     }
 
     @Override
-    public URI getLayerConfiguration(URI uri, String layer, String space, String context, ClassLoader loader) {
+    public URI getLayerConfiguration(URI uri, String layer, String space, String context, ClassLoader loader, String variant) {
         String uriPath = uri.getPath().replace("/", "_");
-        String path = resourcesRoot + "/layers-configuration/" + version + (space == null ? "/default"  : "/" + space) + "/nominal/" + context + "/" + layer + "/" + uriPath;
+        String path = resourcesRoot + "/layers-configuration/" + version + (space == null ? "/default"  : "/" + space) + ( variant == null ? "/nominal/" : "/"+variant+"/") + context + "/" + layer + "/" + uriPath;
         URL u = loader.getResource(path);
         if (u == null) {
             return null;
